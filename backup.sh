@@ -49,6 +49,15 @@ case $OPCAO in
         read -p "Por favor, digite o nome do volume Docker que deseja fazer restaurar: " VOLUME_NAME
         VOLUME_NAME=$(echo "$VOLUME_NAME" | tr -d '[:space:]') # Remove espaços em branco
 
+        read -p "Por favor, digite o nome do container Docker ou ID: " CONTAINER_NAME
+        CONTAINER_NAME=$(echo "$CONTAINER_NAME" | tr -d '[:space:]') # Remove espaços em branco
+        
+
+        docker stop $CONTAINER_NAME
+        docker rm $CONTAINER_NAME
+        docker volume rm $VOLUME_NAME
+        docker volume create $VOLUME_NAME
+
         docker run -it --name meu_container -v $VOLUME_NAME:/volume_data -v $(pwd):/backup busybox:latest sh -c "cd /backup && tar -xzvf $BACKUP_FILE -C /volume_data && exit"
         docker rm meu_container
 
